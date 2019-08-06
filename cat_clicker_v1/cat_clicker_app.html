@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<body>
+    <img id="cat_img" src="https://lh3.ggpht.com/nlI91wYNCrjjNy5f-S3CmVehIBM4cprx-JFWOztLk7vFlhYuFR6YnxcT446AvxYg4Ab7M1Fy0twaOCWYcUk=s0#w=640&h=426" >
+
+    <p>Click counter:</p>
+    <p id="click_counter" style="font-size: 40px; color: blue; justify-self: center"></p>
+
+    <script>
+    var elem = document.getElementById('cat_img');
+    var counting = 0;
+
+    document.getElementById('click_counter').innerHTML = counting;
+
+    elem.addEventListener('click', function(){
+        //the element has been clicked... do stuff here
+        counting = counting + 1;
+        document.getElementById('click_counter').innerHTML = counting;
+    }, false);
+    </script>
+</body>
