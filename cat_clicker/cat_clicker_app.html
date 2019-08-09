@@ -1,15 +1,34 @@
 <!DOCTYPE html>
 <head> 
-
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/all.css">
 </head>
 <body>
-    <h3>Our list of cats</h3>
-    <ul id="cat_list">
-    </ul>
 
-    <div id="cat_viewer">
-        <h3 id="clicked_cat_name"></h3>
-        <h4 id="clicked_cat_counter"></h4>
-        <img id="clicked_cat_img" src="">
+
+
+
+
+
+    <div class="header">
+        <div class="title">The Cat Clicker App</div>
+    </div>
+
+
+    <ul id="cats" style="background-color: aqua; min-width: 100px; min-height: 100px;"></ul>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="app.js"></script>
+    
+    <div class="content">
+        <div class="cat_menu">
+            <div class="cat_list_item"><i class="fas fa-cat"></i>Cat1</div>
+            <div class="cat_list_item"><i class="fas fa-cat"></i>Cat1</div>
+            <div class="cat_list_item"><i class="fas fa-cat"></i>Cat1</div>
+        </div>
+        <div class="full_cat_info">
+            <div class="full_cat_name">Mr Cat</div>
+            <div class="full_cat_counter">Clicks: <span>110</span></div>
+            <img class="full_cat_img" src="https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260">
+        </div>
     </div>
 </body>

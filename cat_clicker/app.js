@@ -1,48 +1,109 @@
+$(function() {
 
-    // list of cat names available
-    var cat_names = ["melvin", "marlow", "chester", "squisy", "furracious", "kitking", "mr. cat"];
+    var dummyData = {
+        // list of cat names available
+        catNames : ["melvin", "marlow", "chester", "squisy", "furracious", "kitking", "mr. cat"],
 
-    // list of cat pictures available
-    var cat_pics = ["https://lh3.ggpht.com/nlI91wYNCrjjNy5f-S3CmVehIBM4cprx-JFWOztLk7vFlhYuFR6YnxcT446AvxYg4Ab7M1Fy0twaOCWYcUk=s0#w=640&h=426", "https://lh3.ggpht.com/kixazxoJ2ufl3ACj2I85Xsy-Rfog97BM75ZiLaX02KgeYramAEqlEHqPC3rKqdQj4C1VFnXXryadFs1J9A=s0#w=640&h=496", "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/320014/pexels-photo-320014.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"];
+        // list of cat pictures available
+        catPics : ["https://lh3.ggpht.com/nlI91wYNCrjjNy5f-S3CmVehIBM4cprx-JFWOztLk7vFlhYuFR6YnxcT446AvxYg4Ab7M1Fy0twaOCWYcUk=s0#w=640&h=426", "https://lh3.ggpht.com/kixazxoJ2ufl3ACj2I85Xsy-Rfog97BM75ZiLaX02KgeYramAEqlEHqPC3rKqdQj4C1VFnXXryadFs1J9A=s0#w=640&h=496", "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/320014/pexels-photo-320014.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"],
 
-    // variable to hold the click count for each cat
-    var cat_counters = [];
+        // variable to hold the click count for each cat
+        cat_counters : []
+    };
+
+
     
-    // a function to initialise the counters for each available cat when the page is loaded
-    function init_counters() {
-        for(var i=cat_names.length-1 ; i>=0 ; i--) {
-            cat_counters.push(0);
-            console.log(cat_counters)
+    var model = {
+        init: function() {
+            // check to see if there are any cats already in storage
+            // if not, initialise an empty array and convert to json
+            if (!localStorage.cats) {
+                localStorage.cats = JSON.stringify([]);
+            }
+        },
+        // The add function of the model
+        add: function(obj) {
+            // inialize a variable and load the cats saved in storage
+            // by parsing the json data
+            var data = JSON.parse(localStorage.cats);
+            // push (append) the new data object to the data array variable
+            data.push(obj);
+            // convert the updated array back to json for storage
+            localStorage.cats = JSON.stringify(data);
+        },
+        // Get all cats stored in the app by parsing the stored json file
+        getAllCats: function() {
+            return JSON.parse(localStorage.cats);
+        },
+        // a function to initialise the list with some cats
+        loadDummyData : function () {
+            for(var i=dummyData.catNames.length-1 ; i>=0 ; i--) {
+                var catObj = {
+                    name: dummyData.catNames[i],
+                    pic: dummyData.catPics[i],
+                    counter: 0
+                };
+                this.add(catObj);
+                console.log("pushed the data for: " + catObj.val());
+            }
         }
-    }
-    // initialise the click counters of the cats available
-    init_counters();
+    };
 
-    // iterate through the list of available cats
-    for (var cat_id = 0; cat_id < cat_names.length ; cat_id++) {
+    var octopus = {
+        // add_cat
+        addNewCat: function(catNameStr, catPicStr) {
+            model.add({
+                name: catNameStr,
+                pic: catPicStr,
+                counter: 0
+            });
 
-        // create a list item element for the current cat
-        var name_elem = document.createElement('li');
+            view.render()
+        },
+        // remove_cat
+        // get_cats
+        getAvailableCats: function() {
+            return model.getAllCats();
+        },
+        // init
+        init: function() {
+            model.init();
+            view.init();
+            model.loadDummyData();
+        }
+    };
 
-        // assign an id for the this element based on the id of the cat
-        name_elem.id = 'list_item_' + cat_id;
+    var view = {
+        // init
+        init: function() {
+            this.catList = $('#cats');
+            var newCatForm = $('#new-car-form');
+            var newCatName = $('#new-cat-name');
+            var newCatPic = $('#new-cat-img');
 
-        // insert the list item element into the full list element
-        document.getElementById('cat_list').appendChild(name_elem);
+            newCatForm.submit(function(e) {
+                octopus.addNewCat(newCatName.val(), newCatPic.val());
+                
+                newCatName.val('');
+                newCatPic.val('');
 
-        // add the name to the list item
-        document.getElementById('list_item_'+cat_id).innerHTML = cat_names[cat_id];
+                e.prevenDefault();
+            });
+            
+            view.render();
+        },
 
-        // this will house the functionality of when a list item is clicked
-        name_elem.addEventListener('click', (function(cat_id_copy){
-            return function() {
-                // increment the counter value for the selected cat
-                cat_counters[cat_id_copy] = cat_counters[cat_id_copy] + 1;
+        // render
+        render: function() {
+            var htmlStr = '';
 
-                // update the cat viewer to display the selected cat
-                document.getElementById('clicked_cat_name').innerHTML = cat_names[cat_id_copy];
-                document.getElementById('clicked_cat_counter').innerHTML = cat_counters[cat_id_copy];
-                document.getElementById('clicked_cat_img').src = cat_pics[cat_id_copy%cat_pics.length];
-            };
-        })(cat_id));
-    }
+            octopus.getAvailableCats().forEach(function(cat) {
+                htmlStr += '<h1>' + cat.name + '</h1>';
+            });
+
+            this.catList.html( htmlStr );
+        }
+    };
+
+    octopus.init();
+});

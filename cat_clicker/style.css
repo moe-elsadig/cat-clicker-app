@@ -1,4 +1,44 @@
-.counter{
-    font-size: 40px; 
-    color: blue;
+*{
+}
+div{
+    /* border: 1px grey solid; */
+}
+.header{
+    height: 100px;
+    display: stretch;
+}
+.title{
+    font-weight: 400;
+    font-size: 40px;
+}
+.content{
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-row-gap: 2em;
+}
+.cat_menu{
+    display: grid;
+    grid-template-rows: repeat(1fr);
+    align-content: start;
+    grid-gap: 1em;
+}
+.cat_list_item{
+    height: 30px;
+}
+.cat_list_item:hover{
+    background-color: antiquewhite;
+}
+.full_cat_info{
+    width: 300;
+    height: 500;
+}
+.full_cat_img{
+    width: 300px;
+    height: 300px;
+}
+.full_cat_name{
+    font-size: 40px;
+}
+.full_cat_counter{
+    font-size: 40px;
 }
