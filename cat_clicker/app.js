@@ -1,109 +1,109 @@
-$(function() {
+/* ============ Model ============ */
 
-    var dummyData = {
-        // list of cat names available
-        catNames : ["melvin", "marlow", "chester", "squisy", "furracious", "kitking", "mr. cat"],
-
-        // list of cat pictures available
-        catPics : ["https://lh3.ggpht.com/nlI91wYNCrjjNy5f-S3CmVehIBM4cprx-JFWOztLk7vFlhYuFR6YnxcT446AvxYg4Ab7M1Fy0twaOCWYcUk=s0#w=640&h=426", "https://lh3.ggpht.com/kixazxoJ2ufl3ACj2I85Xsy-Rfog97BM75ZiLaX02KgeYramAEqlEHqPC3rKqdQj4C1VFnXXryadFs1J9A=s0#w=640&h=496", "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/320014/pexels-photo-320014.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260", "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"],
-
-        // variable to hold the click count for each cat
-        cat_counters : []
-    };
-
-
-    
-    var model = {
-        init: function() {
-            // check to see if there are any cats already in storage
-            // if not, initialise an empty array and convert to json
-            if (!localStorage.cats) {
-                localStorage.cats = JSON.stringify([]);
-            }
+var model = {
+    currentCat: null,
+    cats: [
+        {
+            clickCount : 0,
+            name: 'melvin',
+            imgSrc: 'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+            imgAttribution: 'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
         },
-        // The add function of the model
-        add: function(obj) {
-            // inialize a variable and load the cats saved in storage
-            // by parsing the json data
-            var data = JSON.parse(localStorage.cats);
-            // push (append) the new data object to the data array variable
-            data.push(obj);
-            // convert the updated array back to json for storage
-            localStorage.cats = JSON.stringify(data);
+        {
+            clickCount : 0,
+            name: 'chester',
+            imgSrc: 'https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+            imgAttribution: 'https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
         },
-        // Get all cats stored in the app by parsing the stored json file
-        getAllCats: function() {
-            return JSON.parse(localStorage.cats);
+        {
+            clickCount : 0,
+            name: 'furracious',
+            imgSrc: 'https://lh3.ggpht.com/kixazxoJ2ufl3ACj2I85Xsy-Rfog97BM75ZiLaX02KgeYramAEqlEHqPC3rKqdQj4C1VFnXXryadFs1J9A=s0#w=640&h=496',
+            imgAttribution: 'https://lh3.ggpht.com/kixazxoJ2ufl3ACj2I85Xsy-Rfog97BM75ZiLaX02KgeYramAEqlEHqPC3rKqdQj4C1VFnXXryadFs1J9A=s0#w=640&h=496',
         },
-        // a function to initialise the list with some cats
-        loadDummyData : function () {
-            for(var i=dummyData.catNames.length-1 ; i>=0 ; i--) {
-                var catObj = {
-                    name: dummyData.catNames[i],
-                    pic: dummyData.catPics[i],
-                    counter: 0
+        {
+            clickCount : 0,
+            name: 'Mr Cat',
+            imgSrc: 'https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+            imgAttribution: 'Pexels.com',
+        },
+    ]
+};
+
+/* ============ Octopus ============ */
+
+var octopus = {
+    init : function() {
+        model.currentCat = model.cats[0];
+        catListView.init();
+        catView.init();    
+    },
+    getCurrentCat : function() {
+        return model.currentCat;
+    },
+    getCats : function() {
+        return model.cats;
+    },
+    setCurrentCat: function(cat) {
+        model.currentCat = cat;
+    },
+    incrementCounter : function() {
+        model.currentCat.clickCount++;
+        catView.render();
+    }
+};
+
+/* ============ View ============ */
+
+var catView = {
+    init : function() {
+        this.catElem = document.getElementById('cat');
+        this.catNameElem = document.getElementById('cat-name');
+        this.catImageElem = document.getElementById('cat-img');
+        this.countElem = document.getElementById('cat-count');
+
+        this.catImageElem.addEventListener('click', function(e) {
+            octopus.incrementCounter();
+        });
+
+        this.render();
+    },
+
+    render : function() {
+        var currentCat = octopus.getCurrentCat();
+        this.countElem.textContent = currentCat.clickCount;
+        this.catNameElem.textContent = currentCat.name;
+        this.catImageElem.src = currentCat.imgSrc;
+    }
+};
+
+var catListView = {
+    init: function() {
+        this.catListElem = document.getElementById('cat-list');
+        this.render();
+    },
+
+    render : function() {
+        var cats = octopus.getCats();
+
+        this.catListElem.innerHTML = '';
+
+        for (var i = 0; i < cats.length; i++) {
+            var cat = cats[i];
+
+            var elem = document.createElement('li');
+            elem.textContent = cat.name;
+
+            elem.addEventListener('click', (function(cat) {
+                return function() {
+                    octopus.setCurrentCat(cat);
+                    catView.render();
                 };
-                this.add(catObj);
-                console.log("pushed the data for: " + catObj.val());
-            }
-        }
-    };
+            })(cat));
 
-    var octopus = {
-        // add_cat
-        addNewCat: function(catNameStr, catPicStr) {
-            model.add({
-                name: catNameStr,
-                pic: catPicStr,
-                counter: 0
-            });
+            this.catListElem.appendChild(elem);
+        };
+    }
+};
 
-            view.render()
-        },
-        // remove_cat
-        // get_cats
-        getAvailableCats: function() {
-            return model.getAllCats();
-        },
-        // init
-        init: function() {
-            model.init();
-            view.init();
-            model.loadDummyData();
-        }
-    };
-
-    var view = {
-        // init
-        init: function() {
-            this.catList = $('#cats');
-            var newCatForm = $('#new-car-form');
-            var newCatName = $('#new-cat-name');
-            var newCatPic = $('#new-cat-img');
-
-            newCatForm.submit(function(e) {
-                octopus.addNewCat(newCatName.val(), newCatPic.val());
-                
-                newCatName.val('');
-                newCatPic.val('');
-
-                e.prevenDefault();
-            });
-            
-            view.render();
-        },
-
-        // render
-        render: function() {
-            var htmlStr = '';
-
-            octopus.getAvailableCats().forEach(function(cat) {
-                htmlStr += '<h1>' + cat.name + '</h1>';
-            });
-
-            this.catList.html( htmlStr );
-        }
-    };
-
-    octopus.init();
-});
+octopus.init();
